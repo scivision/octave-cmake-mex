@@ -51,10 +51,34 @@ if(Octave_CXX_OK)
 
   add_test(NAME Octave_CPP COMMAND octave_cpp)
 
+
+# --- Fortran: https://wiki.octave.org/Fortran
+# Fortran in Octave MEX is accomplished by binding to C or C++ functions from Fortran
+  add_test(NAME GenDataFile
+  COMMAND ${Octave_EXECUTABLE} --eval "A = rand(3); save('-ascii', '${CMAKE_CURRENT_BINARY_DIR}/data.txt', 'A')"
+  )
+  set_tests_properties(GenDataFile PROPERTIES
+  FIXTURES_SETUP data_fxt
+  TIMEOUT 15
+  )
+
+  add_library(cpp_file file.cpp)
+  target_link_libraries(cpp_file PRIVATE Octave::Octave)
+  target_compile_features(cpp_file PRIVATE cxx_std_11)
+
+  add_executable(fortran_file file.f90)
+  target_link_libraries(fortran_file PRIVATE cpp_file)
+
+  add_test(NAME Octave_Fortran_file COMMAND fortran_file
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+  set_tests_properties(Octave_Fortran_file PROPERTIES
+  FIXTURES_REQUIRED data_fxt
+  )
+
 endif(Octave_CXX_OK)
 
 
-# --- Fortran: https://wiki.octave.org/Fortran
 
 # --- props
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
