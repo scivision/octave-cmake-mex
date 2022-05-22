@@ -62,9 +62,8 @@ if(Octave_CXX_OK)
   TIMEOUT 15
   )
 
-  add_library(cpp_file file.cpp)
+  add_library(cpp_file OBJECT file.cpp)
   target_link_libraries(cpp_file PRIVATE Octave::Octave)
-  target_compile_features(cpp_file PRIVATE cxx_std_11)
 
   add_executable(fortran_file file.f90)
   target_link_libraries(fortran_file PRIVATE cpp_file)
@@ -75,6 +74,15 @@ if(Octave_CXX_OK)
   set_tests_properties(Octave_Fortran_file PROPERTIES
   FIXTURES_REQUIRED data_fxt
   )
+
+  # not working, probably incorrect syntax
+  add_library(cpp_pow2 OBJECT pow2.cpp)
+  target_link_libraries(cpp_pow2 PRIVATE Octave::Octave)
+
+  add_executable(pow2 pow2.f90)
+  target_link_libraries(pow2 PRIVATE cpp_pow2)
+
+  # add_test(NAME Octave_Fortran_array COMMAND pow2)
 
 endif(Octave_CXX_OK)
 

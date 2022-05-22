@@ -2,8 +2,7 @@
 #include <oct.h>
 #include <ls-mat-ascii.h>
 
-// Custom header containing the C compatible interface
-#include "octave_file_io.h"
+extern "C" int octave_load (const char*, double**, int*);
 
 //! Load a single matrix, stored in ASCII format, from a data file.
 //!
