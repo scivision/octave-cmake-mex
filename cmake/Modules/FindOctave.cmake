@@ -97,38 +97,31 @@ endif()
 if(Development IN_LIST Octave_FIND_COMPONENTS)
 
   if(Octave_CONFIG_EXECUTABLE)
-    execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p OCTINCLUDEDIR
-    OUTPUT_VARIABLE Octave_INCLUDE_DIR
-    ERROR_QUIET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    TIMEOUT 5
-    )
-
-    execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p OCTLIBDIR
-    OUTPUT_VARIABLE Octave_LIB1
-    ERROR_QUIET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    TIMEOUT 5
-    )
-
-    execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p LIBDIR
-    OUTPUT_VARIABLE Octave_LIB2
-    ERROR_QUIET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    TIMEOUT 5
-    )
+    foreach(p OCTINCLUDEDIR OCTLIBDIR LIBDIR)
+      execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p ${p}
+      OUTPUT_VARIABLE Octave_${p}
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      TIMEOUT 5
+      )
+    endforeach()
   endif(Octave_CONFIG_EXECUTABLE)
+
+  find_path(Octave_INCLUDE_DIR
+  NAMES oct.h
+  HINTS ${Octave_OCTINCLUDEDIR}
+  )
 
   find_library(Octave_INTERP_LIBRARY
   NAMES octinterp
-  HINTS ${Octave_LIB1} ${Octave_LIB2}
+  HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
   )
   find_library(Octave_OCTAVE_LIBRARY
   NAMES octave
-  HINTS ${Octave_LIB1} ${Octave_LIB2}
+  HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
   )
 
-  if(Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
+  if(Octave_INCLUDE_DIR AND Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
     set(Octave_Development_FOUND true)
   endif()
 
@@ -186,5 +179,6 @@ mark_as_advanced(
 Octave_CONFIG_EXECUTABLE
 Octave_INTERP_LIBRARY
 Octave_OCTAVE_LIBRARY
+Octave_OCTINCLUDEDIR Octave_OCTLIBDIR Octave_LIBDIR
 Octave_INCLUDE_DIR
 )
