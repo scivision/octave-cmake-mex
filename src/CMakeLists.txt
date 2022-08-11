@@ -62,8 +62,8 @@ if(Octave_CXX_OK)
   add_library(cpp_file OBJECT file.cpp)
   target_link_libraries(cpp_file PRIVATE Octave::Octave)
 
-  add_executable(fortran_file file.f90)
-  target_link_libraries(fortran_file PRIVATE cpp_file)
+  add_executable(fortran_file file.f90 $<TARGET_OBJECTS:cpp_file>)
+  target_link_libraries(fortran_file PRIVATE Octave::Octave)
 
   add_test(NAME Octave_Fortran_file COMMAND fortran_file
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -74,9 +74,8 @@ if(Octave_CXX_OK)
   add_library(cpp_pow2 OBJECT pow2.cpp)
   target_link_libraries(cpp_pow2 PRIVATE Octave::Octave)
 
-  add_executable(pow2 pow2.f90)
-  target_link_libraries(pow2 PRIVATE cpp_pow2)
-
+  add_executable(pow2 pow2.f90 $<TARGET_OBJECTS:cpp_pow2>)
+  target_link_libraries(pow2 PRIVATE Octave::Octave)
   # add_test(NAME Octave_Fortran_array COMMAND pow2)
 
 endif(Octave_CXX_OK)

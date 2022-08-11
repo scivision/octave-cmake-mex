@@ -45,18 +45,15 @@ The following cache variables may also be set:
 ``Octave_OCTAVE_LIBRARY``
   path to the liboctave library
 
-
 Hints
 ^^^^^
+
 
 FindOctave checks the environment variable OCTAVE_EXECUTABLE for the
 Octave interpreter.
 #]=======================================================================]
 
-unset(_hint)
-if(DEFINED ENV{OCTAVE_EXECUTABLE})
-  get_filename_component(_hint $ENV{OCTAVE_EXECUTABLE} DIRECTORY)
-endif()
+get_filename_component(_hint "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 
 unset(_hint_dir)
 unset(_path)
@@ -65,7 +62,7 @@ if(WIN32)
   set(_suff mingw64/bin)
   set(_path "$ENV{ProgramFiles}/GNU Octave")
   if(IS_DIRECTORY ${_path})
-    file(GLOB_RECURSE _hint_dir "${_path}/Octave-*/mingw64/bin/octave-cli.exe")
+    file(GLOB_RECURSE _hint_dir "${_path}/Octave-*/${_suff}/octave-cli.exe")
   else()
     unset(_path)
   endif()
@@ -76,6 +73,7 @@ NAMES octave-config
 HINTS ${_hint} ${_hint_dir}
 PATHS ${_path}
 PATH_SUFFIXES ${_suff}
+DOC "Octave configuration helper"
 )
 
 if(Octave_CONFIG_EXECUTABLE)
@@ -110,15 +108,18 @@ if(Development IN_LIST Octave_FIND_COMPONENTS)
   find_path(Octave_INCLUDE_DIR
   NAMES oct.h
   HINTS ${Octave_OCTINCLUDEDIR}
+  DOC "Octave header"
   )
 
   find_library(Octave_INTERP_LIBRARY
   NAMES octinterp
   HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
+  DOC "Octave Interpolation"
   )
   find_library(Octave_OCTAVE_LIBRARY
   NAMES octave
   HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
+  DOC "Core Octave library"
   )
 
   if(Octave_INCLUDE_DIR AND Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
@@ -156,10 +157,8 @@ if(Octave_Development_FOUND)
 
   if(NOT TARGET Octave::Octave)
     add_library(Octave::Octave INTERFACE IMPORTED)
-    set_target_properties(Octave::Octave PROPERTIES
-    INTERFACE_LINK_LIBRARIES "${Octave_INTERP_LIBRARY};${Octave_OCTAVE_LIBRARY}"
-    INTERFACE_INCLUDE_DIRECTORIES ${Octave_INCLUDE_DIR}
-    )
+    set_property(TARGET Octave::Octave PROPERTY INTERFACE_LINK_LIBRARIES "${Octave_INTERP_LIBRARY};${Octave_OCTAVE_LIBRARY}")
+    set_property(TARGET Octave::Octave PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Octave_INCLUDE_DIR})
   endif()
 
 endif()
@@ -168,10 +167,8 @@ endif()
 if(Octave_Interpreter_FOUND)
   if(NOT TARGET Octave::Interpreter)
     add_executable(Octave::Interpreter IMPORTED)
-    set_target_properties(Octave::Interpreter PROPERTIES
-    IMPORTED_LOCATION ${Octave_EXECUTABLE}
-    VERSION "${Octave_VERSION}"
-    )
+    set_property(TARGET Octave::Interpreter PROPERTY IMPORTED_LOCATION ${Octave_EXECUTABLE})
+    set_property(TARGET Octave::Interpreter PROPERTY VERSION "${Octave_VERSION}")
   endif()
 endif()
 
