@@ -57,10 +57,7 @@ if(Octave_CXX_OK)
   add_test(NAME GenDataFile
   COMMAND ${Octave_EXECUTABLE} --eval "A = rand(3); save('-ascii', '${CMAKE_CURRENT_BINARY_DIR}/data.txt', 'A')"
   )
-  set_tests_properties(GenDataFile PROPERTIES
-  FIXTURES_SETUP data_fxt
-  TIMEOUT 15
-  )
+  set_property(TEST GenDataFile PROPERTY FIXTURES_SETUP data_fxt)
 
   add_library(cpp_file OBJECT file.cpp)
   target_link_libraries(cpp_file PRIVATE Octave::Octave)
@@ -71,9 +68,7 @@ if(Octave_CXX_OK)
   add_test(NAME Octave_Fortran_file COMMAND fortran_file
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
-  set_tests_properties(Octave_Fortran_file PROPERTIES
-  FIXTURES_REQUIRED data_fxt
-  )
+  set_property(TEST Octave_Fortran_file PROPERTY FIXTURES_REQUIRED data_fxt)
 
   # not working, probably incorrect syntax
   add_library(cpp_pow2 OBJECT pow2.cpp)
@@ -90,8 +85,12 @@ endif(Octave_CXX_OK)
 
 # --- props
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-set_tests_properties(${test_names} PROPERTIES TIMEOUT 20)
+
+set_property(TEST ${test_names} PROPERTY TIMEOUT 20)
+
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   cmake_path(GET Octave_EXECUTABLE PARENT_PATH Octave_DLLPATH)
-  set_tests_properties(${test_names} PROPERTIES ENVIRONMENT_MODIFICATION PATH=path_list_append:${Octave_DLLPATH})
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION PATH=path_list_append:${Octave_DLLPATH}
+  )
 endif()
