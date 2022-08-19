@@ -58,6 +58,7 @@ get_filename_component(_hint "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 unset(_hint_dir)
 unset(_path)
 unset(_suff)
+unset(_req)
 if(WIN32)
   set(_suff mingw64/bin)
   set(_path "$ENV{ProgramFiles}/GNU Octave")
@@ -93,6 +94,8 @@ if(Octave_CONFIG_EXECUTABLE)
 endif()
 
 if(Development IN_LIST Octave_FIND_COMPONENTS)
+
+  set(_req Octave_INCLUDE_DIR Octave_OCTAVE_LIBRARY)
 
   if(Octave_CONFIG_EXECUTABLE)
     foreach(p OCTINCLUDEDIR OCTLIBDIR LIBDIR)
@@ -141,13 +144,15 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
     set(Octave_Interpreter_FOUND true)
   endif(Octave_EXECUTABLE)
 
+  list(APPEND _req Octave_EXECUTABLE)
+
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Octave
 VERSION_VAR Octave_VERSION
+REQUIRED_VARS ${_req}
 HANDLE_COMPONENTS
-HANDLE_VERSION_RANGE
 )
 
 
