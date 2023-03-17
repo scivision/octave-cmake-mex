@@ -12,8 +12,6 @@ if(Octave_CXX_OK)
 
   add_executable(octave_cpp octave_mex.cpp)
   target_link_libraries(octave_cpp PRIVATE Octave::Octave)
-  target_compile_features(octave_cpp PRIVATE cxx_std_11)
-
   add_test(NAME Octave_CPP COMMAND octave_cpp)
 
 

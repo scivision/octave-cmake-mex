@@ -24,7 +24,6 @@ Octave_C_OK
 
 # --- C++
 
-set(CMAKE_CXX_STANDARD 11)  # need for test with Clang
 check_cxx_source_compiles(
 "
 #include <oct.h>
