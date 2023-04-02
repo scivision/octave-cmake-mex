@@ -1,5 +1,7 @@
 # GNU Octave CMake MEX
 
+[![CI](https://github.com/scivision/octave-cmake-mex/actions/workflows/ci.yml/badge.svg)](https://github.com/scivision/octave-cmake-mex/actions/workflows/ci.yml)
+
 CMake and GNU Octave MEX examples of complied code.
 
 ## Usage
