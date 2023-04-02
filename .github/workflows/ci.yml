@@ -7,6 +7,8 @@ on:
   push:
     paths:
     - "**.m"
+    - "**.cpp"
+    - "**.f90"
     - "**.cmake"
     - "**/CMakeLists.txt"
     - ".github/workflows/ci.yml"

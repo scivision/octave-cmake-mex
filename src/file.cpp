@@ -28,7 +28,9 @@ int octave_load (const char* file_name, double** data, int* numel)
   *numel = A.numel ();
 
   // Allocate memory to pointer to returned values.
-  *data  = (double*) malloc (A.numel () * sizeof (double));
+  *data = (double*) malloc (A.numel () * sizeof (double));
+  if(!data)
+    return 1;
 
   // Copy the content of matrix A to data structure Fortran can handle.
   memcpy (*data, A.fortran_vec (), A.numel () * sizeof (double));
