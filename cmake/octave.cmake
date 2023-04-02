@@ -1,7 +1,4 @@
-
-include(CheckCSourceCompiles)
-include(CheckCXXSourceCompiles)
-
+include(CheckSourceCompiles)
 
 find_package(Octave COMPONENTS Development Interpreter REQUIRED)
 
@@ -9,7 +6,7 @@ set(CMAKE_REQUIRED_LIBRARIES ${Octave_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${Octave_INCLUDE_DIRS})
 
 # --- C
-check_c_source_compiles(
+check_source_compiles(C
 [=[
 #include "mex.h"
 
@@ -24,7 +21,7 @@ Octave_C_OK
 
 # --- C++
 
-check_cxx_source_compiles(
+check_source_compiles(CXX
 "
 #include <oct.h>
 #include <cstdlib>

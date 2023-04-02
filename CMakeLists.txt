@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13...3.26)
+cmake_minimum_required(VERSION 3.19...3.27)
 
 project(OctaveMEX LANGUAGES C CXX Fortran)
 
@@ -16,4 +16,7 @@ COMMAND ${Octave_EXECUTABLE} --eval "oruntests('${CMAKE_CURRENT_SOURCE_DIR}')"
 
 add_subdirectory(src)
 
-file(GENERATE OUTPUT .gitignore CONTENT "*")
+# auto-ignore build dir
+if(NOT PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  file(GENERATE OUTPUT .gitignore CONTENT "*")
+endif()
