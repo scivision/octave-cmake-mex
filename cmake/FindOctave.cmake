@@ -56,21 +56,26 @@ Octave interpreter.
 get_filename_component(_hint "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 
 unset(_hint_dir)
-unset(_path)
-unset(_suff)
+unset(_paths)
 unset(_req)
+
 if(WIN32)
-  set(_suff mingw64/bin)
-  set(_path "$ENV{ProgramFiles}/GNU Octave")
-  file(GLOB _hint_dir "${_path}/Octave-*/${_suff}/octave-cli.exe")
-  get_filename_component(_hint_dir "${_hint_dir}" DIRECTORY)
+  set(_arch mingw64)
+  # currently the only arch distributed by GNU Octave team for Windows
+  set(_paths "$ENV{LOCALAPPDATA}/Programs/GNU Octave" "$ENV{ProgramFiles}/GNU Octave")
+  foreach(_p IN LISTS _paths)
+    file(GLOB _hint_dir "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
+    if(_hint_dir)
+      get_filename_component(_hint_dir "${_hint_dir}" DIRECTORY)
+      break()
+    endif()
+  endforeach()
 endif()
 
 find_program(Octave_CONFIG_EXECUTABLE
 NAMES octave-config
 HINTS ${_hint} ${_hint_dir}
-PATHS ${_path}
-PATH_SUFFIXES ${_suff}
+PATHS ${_paths}
 DOC "Octave configuration helper"
 )
 
@@ -109,17 +114,20 @@ if(Development IN_LIST Octave_FIND_COMPONENTS)
   NAMES oct.h
   HINTS ${Octave_OCTINCLUDEDIR}
   DOC "Octave header"
+  NO_DEFAULT_PATH
   )
 
   find_library(Octave_INTERP_LIBRARY
   NAMES octinterp
   HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
   DOC "Octave Interpolation"
+  NO_DEFAULT_PATH
   )
   find_library(Octave_OCTAVE_LIBRARY
   NAMES octave
   HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
   DOC "Core Octave library"
+  NO_DEFAULT_PATH
   )
 
   if(Octave_INCLUDE_DIR AND Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
@@ -134,7 +142,7 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
   NAMES octave-cli octave
   HINTS ${Octave_BINARY_DIR} ${_hint} ${_hint_dir}
   PATHS ${_path}
-  PATH_SUFFIXES ${_suff}
+  NO_DEFAULT_PATH
   )
 
   if(Octave_EXECUTABLE)
