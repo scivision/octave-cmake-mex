@@ -1,8 +1,19 @@
 cmake_minimum_required(VERSION 3.19...3.27)
 
-project(OctaveMEX LANGUAGES C CXX Fortran)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(FATAL_ERROR "please use out-of-source build
+  cmake -B build")
+endif()
+
+project(OctaveMEX LANGUAGES C CXX)
 
 enable_testing()
+
+option(fortran "use Fortran" on)
+
+if(fortran)
+  enable_language(Fortran)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -17,6 +28,4 @@ COMMAND ${Octave_EXECUTABLE} --eval "oruntests('${CMAKE_CURRENT_SOURCE_DIR}')"
 add_subdirectory(src)
 
 # auto-ignore build dir
-if(NOT PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  file(GENERATE OUTPUT .gitignore CONTENT "*")
-endif()
+file(GENERATE OUTPUT .gitignore CONTENT "*")

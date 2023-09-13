@@ -39,6 +39,8 @@ flatpak run --command=sh org.octave.Octave
 The **Windows** default
 [installation](https://octave.org/download)
 includes development libraries used in these examples.
+On Windows, use GCC MinGW / MSYS2 as Visual Studio is not compatible with the Octave libraries.
+Cygwin or WSL can also be used for Octave on Windows.
 
 ---
 
