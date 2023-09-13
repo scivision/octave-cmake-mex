@@ -62,11 +62,8 @@ unset(_req)
 if(WIN32)
   set(_suff mingw64/bin)
   set(_path "$ENV{ProgramFiles}/GNU Octave")
-  if(IS_DIRECTORY ${_path})
-    file(GLOB_RECURSE _hint_dir "${_path}/Octave-*/${_suff}/octave-cli.exe")
-  else()
-    unset(_path)
-  endif()
+  file(GLOB _hint_dir "${_path}/Octave-*/${_suff}/octave-cli.exe")
+  get_filename_component(_hint_dir "${_hint_dir}" DIRECTORY)
 endif()
 
 find_program(Octave_CONFIG_EXECUTABLE
