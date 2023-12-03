@@ -53,7 +53,7 @@ FindOctave checks the environment variable OCTAVE_EXECUTABLE for the
 Octave interpreter.
 #]=======================================================================]
 
-get_filename_component(_hint "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
+get_filename_component(_hint_dirs "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 
 unset(_hint_dir)
 unset(_paths)
@@ -64,18 +64,20 @@ if(WIN32)
   # currently the only arch distributed by GNU Octave team for Windows
   set(_paths "$ENV{LOCALAPPDATA}/Programs/GNU Octave" "$ENV{ProgramFiles}/GNU Octave")
   foreach(_p IN LISTS _paths)
-    file(GLOB _hint_dir "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
-    if(_hint_dir)
-      get_filename_component(_hint_dir "${_hint_dir}" DIRECTORY)
-      break()
-    endif()
+    file(GLOB _g "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
+    foreach(_h IN LISTS _g)
+      get_filename_component(_h "${_h}" DIRECTORY)
+      list(APPEND _hint_dirs "${_h}")
+    endforeach()
   endforeach()
 endif()
 
+message(VERBOSE "Octave hints: ${_hint_dirs}")
+
 find_program(Octave_CONFIG_EXECUTABLE
 NAMES octave-config
-HINTS ${_hint} ${_hint_dir}
-PATHS ${_paths}
+HINTS "${_hint_dirs}"
+PATHS "${_paths}"
 DOC "Octave configuration helper"
 )
 
@@ -140,8 +142,8 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
 
   find_program(Octave_EXECUTABLE
   NAMES octave-cli octave
-  HINTS ${Octave_BINARY_DIR} ${_hint} ${_hint_dir}
-  PATHS ${_path}
+  HINTS ${Octave_BINARY_DIR} "${_hint_dirs}"
+  PATHS "${_paths}"
   NO_DEFAULT_PATH
   )
 
