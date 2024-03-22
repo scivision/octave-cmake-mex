@@ -2,8 +2,7 @@ include(CheckSourceCompiles)
 
 find_package(Octave COMPONENTS Development Interpreter REQUIRED)
 
-set(CMAKE_REQUIRED_LIBRARIES ${Octave_LIBRARIES})
-set(CMAKE_REQUIRED_INCLUDES ${Octave_INCLUDE_DIRS})
+set(CMAKE_REQUIRED_LIBRARIES Octave::Octave)
 
 # --- C
 check_source_compiles(C
