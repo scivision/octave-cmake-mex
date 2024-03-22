@@ -80,7 +80,10 @@ PATHS "${_paths}"
 DOC "Octave configuration helper"
 )
 
+set(_def)
 if(Octave_CONFIG_EXECUTABLE)
+  set(_def NO_DEFAULT_PATH)
+
   execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p BINDIR
   OUTPUT_VARIABLE Octave_BINARY_DIR
   OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -140,7 +143,7 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
   NAMES octave-cli octave
   HINTS ${Octave_BINARY_DIR} "${_hint_dirs}"
   PATHS "${_paths}"
-  NO_DEFAULT_PATH
+  ${_def}
   )
 
   if(Octave_EXECUTABLE)
