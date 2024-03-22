@@ -18,7 +18,7 @@ if(Octave_CXX_OK)
 # --- Fortran: https://wiki.octave.org/Fortran
 # Fortran in Octave MEX is accomplished by binding to C or C++ functions from Fortran
   add_test(NAME GenDataFile
-  COMMAND ${Octave_EXECUTABLE} --eval "A = rand(3); save('-ascii', '${CMAKE_CURRENT_BINARY_DIR}/data.txt', 'A')"
+  COMMAND Octave::Interpreter --eval "A = rand(3); save('-ascii', '${CMAKE_CURRENT_BINARY_DIR}/data.txt', 'A')"
   )
   set_property(TEST GenDataFile PROPERTY FIXTURES_SETUP data_fxt)
 
@@ -51,6 +51,6 @@ set_property(TEST ${test_names} PROPERTY TIMEOUT 20)
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   cmake_path(GET Octave_EXECUTABLE PARENT_PATH Octave_DLLPATH)
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION PATH=path_list_append:${Octave_DLLPATH}
+  ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Octave_DLLPATH}
   )
 endif()
