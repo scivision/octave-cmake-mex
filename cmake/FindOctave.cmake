@@ -55,15 +55,14 @@ Octave interpreter.
 
 get_filename_component(_hint_dirs "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 
-unset(_paths)
 unset(_req)
 
 if(WIN32)
   set(_arch mingw64)
   # currently the only arch distributed by GNU Octave team for Windows
-  set(_paths "$ENV{LOCALAPPDATA}/Programs/GNU Octave" "$ENV{ProgramFiles}/GNU Octave")
-  foreach(_p IN LISTS _paths)
+  foreach(_p IN ITEMS "$ENV{LOCALAPPDATA}/Programs/GNU Octave" "$ENV{ProgramFiles}/GNU Octave")
     file(GLOB _g "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
+    message(DEBUG "Octave glob hints: ${_g}")
     foreach(_h IN LISTS _g)
       get_filename_component(_h "${_h}" DIRECTORY)
       list(APPEND _hint_dirs "${_h}")
@@ -75,8 +74,7 @@ message(VERBOSE "Octave hints: ${_hint_dirs}")
 
 find_program(Octave_CONFIG_EXECUTABLE
 NAMES octave-config
-HINTS "${_hint_dirs}"
-PATHS "${_paths}"
+HINTS ${_hint_dirs}
 DOC "Octave configuration helper"
 )
 
@@ -141,8 +139,7 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
 
   find_program(Octave_EXECUTABLE
   NAMES octave-cli octave
-  HINTS ${Octave_BINARY_DIR} "${_hint_dirs}"
-  PATHS "${_paths}"
+  HINTS ${Octave_BINARY_DIR} ${_hint_dirs}
   ${_def}
   )
 
