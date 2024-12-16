@@ -53,9 +53,9 @@ FindOctave checks the environment variable OCTAVE_EXECUTABLE for the
 Octave interpreter.
 #]=======================================================================]
 
-get_filename_component(_hint_dirs "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
+get_filename_component(_octave_hint_dirs "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 
-unset(_req)
+unset(_octave_req)
 
 if(WIN32)
   set(_arch mingw64)
@@ -65,22 +65,23 @@ if(WIN32)
     message(DEBUG "Octave glob hints: ${_g}")
     foreach(_h IN LISTS _g)
       get_filename_component(_h "${_h}" DIRECTORY)
-      list(APPEND _hint_dirs "${_h}")
+      list(APPEND _octave_hint_dirs "${_h}")
     endforeach()
   endforeach()
 endif()
 
-message(VERBOSE "Octave hints: ${_hint_dirs}")
+message(VERBOSE "Octave hints: ${_octave_hint_dirs}")
 
 find_program(Octave_CONFIG_EXECUTABLE
 NAMES octave-config
-HINTS ${_hint_dirs}
+HINTS ${_octave_hint_dirs}
+PATH_SUFFIXES bin
 DOC "Octave configuration helper"
 )
 
-set(_def)
+unset(_octave_def)
 if(Octave_CONFIG_EXECUTABLE)
-  set(_def NO_DEFAULT_PATH)
+  set(_octave_def NO_DEFAULT_PATH)
 
   execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p BINDIR
   OUTPUT_VARIABLE Octave_BINARY_DIR
@@ -97,7 +98,7 @@ endif()
 
 if(Development IN_LIST Octave_FIND_COMPONENTS)
 
-  set(_req Octave_INCLUDE_DIR Octave_OCTAVE_LIBRARY)
+  set(_octave_req Octave_INCLUDE_DIR Octave_OCTAVE_LIBRARY)
 
   if(Octave_CONFIG_EXECUTABLE)
     foreach(p IN ITEMS OCTINCLUDEDIR OCTLIBDIR LIBDIR)
@@ -139,22 +140,23 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
 
   find_program(Octave_EXECUTABLE
   NAMES octave-cli octave
-  HINTS ${Octave_BINARY_DIR} ${_hint_dirs}
-  ${_def}
+  HINTS ${Octave_BINARY_DIR} ${_octave_hint_dirs}
+  PATH_SUFFIXES bin
+  ${_octave_def}
   )
 
   if(Octave_EXECUTABLE)
     set(Octave_Interpreter_FOUND true)
   endif(Octave_EXECUTABLE)
 
-  list(APPEND _req Octave_EXECUTABLE)
+  list(APPEND _octave_req Octave_EXECUTABLE)
 
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Octave
 VERSION_VAR Octave_VERSION
-REQUIRED_VARS ${_req}
+REQUIRED_VARS ${_octave_req}
 HANDLE_COMPONENTS
 HANDLE_VERSION_RANGE
 )
