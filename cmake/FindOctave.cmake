@@ -46,7 +46,7 @@ if(WIN32)
   set(_arch mingw64)
   # currently MinGW is the only arch distributed by GNU Octave for Windows
   foreach(_p IN ITEMS "$ENV{LOCALAPPDATA}/Programs/GNU Octave" "$ENV{ProgramFiles}/GNU Octave")
-    file(GLOB _g "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
+    file(GLOB _g LIST_DIRECTORIES false "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
     message(DEBUG "Octave glob hints: ${_g}")
     foreach(_h IN LISTS _g)
       get_filename_component(_h "${_h}" DIRECTORY)
