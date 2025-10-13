@@ -1,8 +1,11 @@
-# GNU Octave CMake MEX
+# GNU Octave CMake with C, C++ and Fortran
 
 [![CI](https://github.com/scivision/octave-cmake-mex/actions/workflows/ci.yml/badge.svg)](https://github.com/scivision/octave-cmake-mex/actions/workflows/ci.yml)
 
-CMake and GNU Octave MEX examples of complied code.
+CMake and GNU Octave with C, C++ and Fortran code using
+[mkoctfile](https://octave.sourceforge.io/octave/function/mkoctfile.html)
+akin to Matlab "mex" command.
+Octfiles are easier and better to use with GNU Octave.
 
 ## Usage
 
@@ -21,7 +24,7 @@ ctest --test-dir build -V
 
 These examples work on any operating system Octave supports.
 
-On **macOS**, we have observed the need to use AppleClang with
+On **macOS** use AppleClang with
 [Homebrew](https://brew.sh)-installed
 Octave.
 
@@ -44,4 +47,4 @@ Cygwin or WSL can also be used for Octave on Windows.
 
 ---
 
-[Matlab with CMake and MEX](https://github.com/scivision/matlab-cmake-mex)
+Matlab: [C, C++, Fortran with MEX](https://github.com/scivision/matlab-cmake-mex)

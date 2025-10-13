@@ -29,25 +29,12 @@ Result Variables
 
 ``Octave_EXECUTABLE``
   Octave interpreter
-``Octave_INCLUDE_DIRS``
-  include path for mex.h
-``Octave_LIBRARIES``
-  octinterp, octave libraries
 
-
-Cache variables
-^^^^^^^^^^^^^^^
-
-The following cache variables may also be set:
-
-``Octave_INTERP_LIBRARY``
-  path to the library octinterp
-``Octave_OCTAVE_LIBRARY``
-  path to the liboctave library
+``Octave_MKOCTFILE``
+  Octave mkoctfile compiler wrapper
 
 Hints
 ^^^^^
-
 
 FindOctave checks the environment variable OCTAVE_EXECUTABLE for the
 Octave interpreter.
@@ -55,11 +42,9 @@ Octave interpreter.
 
 get_filename_component(_octave_hint_dirs "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
 
-unset(_octave_req)
-
 if(WIN32)
   set(_arch mingw64)
-  # currently the only arch distributed by GNU Octave team for Windows
+  # currently MinGW is the only arch distributed by GNU Octave for Windows
   foreach(_p IN ITEMS "$ENV{LOCALAPPDATA}/Programs/GNU Octave" "$ENV{ProgramFiles}/GNU Octave")
     file(GLOB _g "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
     message(DEBUG "Octave glob hints: ${_g}")
@@ -83,12 +68,6 @@ unset(_octave_def)
 if(Octave_CONFIG_EXECUTABLE)
   set(_octave_def NO_DEFAULT_PATH)
 
-  execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p BINDIR
-  OUTPUT_VARIABLE Octave_BINARY_DIR
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-  TIMEOUT 10
-  )
-
   execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p VERSION
   OUTPUT_VARIABLE Octave_VERSION
   OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -96,47 +75,36 @@ if(Octave_CONFIG_EXECUTABLE)
   )
 endif()
 
+
 if(Development IN_LIST Octave_FIND_COMPONENTS)
 
-  set(_octave_req Octave_INCLUDE_DIR Octave_OCTAVE_LIBRARY)
+  if(Octave_CONFIG_EXECUTABLE AND NOT DEFINED Octave_MKOCTFILE)
+    execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p OCTAVE_EXEC_HOME
+    OUTPUT_VARIABLE Octave_OCTAVE_EXEC_HOME
+    OUTPUT_STRIP_TRAILING_WHITESPACE TIMEOUT 10)
+  endif()
 
-  if(Octave_CONFIG_EXECUTABLE)
-    foreach(p IN ITEMS OCTINCLUDEDIR OCTLIBDIR LIBDIR)
-      execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p ${p}
-      OUTPUT_VARIABLE Octave_${p}
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-      TIMEOUT 10
-      )
-    endforeach()
-  endif(Octave_CONFIG_EXECUTABLE)
-
-  find_path(Octave_INCLUDE_DIR
-  NAMES oct.h
-  HINTS ${Octave_OCTINCLUDEDIR}
-  DOC "Octave header"
-  NO_DEFAULT_PATH
+  find_program(Octave_MKOCTFILE
+  NAMES mkoctfile
+  HINTS ${Octave_OCTAVE_EXEC_HOME} ${_octave_hint_dirs}
+  PATH_SUFFIXES bin
+  ${_octave_def}
   )
 
-  find_library(Octave_INTERP_LIBRARY
-  NAMES octinterp
-  HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
-  DOC "Octave Interpolation"
-  NO_DEFAULT_PATH
-  )
-  find_library(Octave_OCTAVE_LIBRARY
-  NAMES octave
-  HINTS ${Octave_OCTLIBDIR} ${Octave_LIBDIR}
-  DOC "Core Octave library"
-  NO_DEFAULT_PATH
-  )
-
-  if(Octave_INCLUDE_DIR AND Octave_INTERP_LIBRARY AND Octave_OCTAVE_LIBRARY)
+  if(Octave_MKOCTFILE)
     set(Octave_Development_FOUND true)
   endif()
 
 endif()
 
+
 if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
+
+  if(Octave_CONFIG_EXECUTABLE AND NOT DEFINED Octave_EXECUTABLE)
+    execute_process(COMMAND ${Octave_CONFIG_EXECUTABLE} -p BINDIR
+    OUTPUT_VARIABLE Octave_BINARY_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE TIMEOUT 10)
+  endif()
 
   find_program(Octave_EXECUTABLE
   NAMES octave-cli octave
@@ -149,29 +117,21 @@ if(Interpreter IN_LIST Octave_FIND_COMPONENTS)
     set(Octave_Interpreter_FOUND true)
   endif(Octave_EXECUTABLE)
 
-  list(APPEND _octave_req Octave_EXECUTABLE)
-
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Octave
 VERSION_VAR Octave_VERSION
-REQUIRED_VARS ${_octave_req}
 HANDLE_COMPONENTS
 HANDLE_VERSION_RANGE
 )
 
 
 if(Octave_Development_FOUND)
-  set(Octave_LIBRARIES ${Octave_INTERP_LIBRARY} ${Octave_OCTAVE_LIBRARY})
-  set(Octave_INCLUDE_DIRS ${Octave_INCLUDE_DIR})
-
-  if(NOT TARGET Octave::Octave)
-    add_library(Octave::Octave INTERFACE IMPORTED)
-    set_property(TARGET Octave::Octave PROPERTY INTERFACE_LINK_LIBRARIES "${Octave_INTERP_LIBRARY};${Octave_OCTAVE_LIBRARY}")
-    set_property(TARGET Octave::Octave PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${Octave_INCLUDE_DIR})
+  if(NOT TARGET Octave::mkoctfile)
+    add_executable(Octave::mkoctfile IMPORTED)
+    set_property(TARGET Octave::mkoctfile PROPERTY IMPORTED_LOCATION ${Octave_MKOCTFILE})
   endif()
-
 endif()
 
 
@@ -183,10 +143,4 @@ if(Octave_Interpreter_FOUND)
   endif()
 endif()
 
-mark_as_advanced(
-Octave_CONFIG_EXECUTABLE
-Octave_INTERP_LIBRARY
-Octave_OCTAVE_LIBRARY
-Octave_OCTINCLUDEDIR Octave_OCTLIBDIR Octave_LIBDIR
-Octave_INCLUDE_DIR
-)
+mark_as_advanced(Octave_CONFIG_EXECUTABLE)
