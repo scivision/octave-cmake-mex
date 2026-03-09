@@ -1,5 +1,5 @@
 #include <cstring>
-#include <oct.h>
+#include <octave/oct.h>
 
 extern "C" void octave_prod(double*, double*, std::size_t);
 

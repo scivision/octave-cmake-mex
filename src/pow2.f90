@@ -1,4 +1,4 @@
-program octave_file_io_example
+program octave_matrix_example
 
 use iso_c_binding
 

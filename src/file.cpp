@@ -1,5 +1,5 @@
 // Octave header
-#include <oct.h>
+#include <octave/oct.h>
 #include <ls-mat-ascii.h>
 
 extern "C" int octave_load (const char*, double**, int*);

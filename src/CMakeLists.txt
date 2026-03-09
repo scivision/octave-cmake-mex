@@ -3,6 +3,8 @@ COMMAND Octave::mkoctfile ${CMAKE_CURRENT_SOURCE_DIR}/array_add.cpp
 )
 add_custom_target(array_add ALL DEPENDS array_add.oct)
 
+add_test(NAME Octave_array_add COMMAND Octave::Interpreter --eval "array_add_test()")
+
 
 # --- Fortran: https://wiki.octave.org/Fortran
 # Fortran in Octave MEX is accomplished by binding to C or C++ functions from Fortran
