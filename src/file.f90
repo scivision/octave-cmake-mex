@@ -31,4 +31,7 @@ call c_f_pointer (data, fdata, [numel])
 
 print '(100F7.3)', fdata
 
+if (sum(fdata) /= 6) error stop "Error: sum of data does not match expected value of 6"
+
+print '(a)', "OK: data loaded successfully and sum matches expected value of 6"
 end program

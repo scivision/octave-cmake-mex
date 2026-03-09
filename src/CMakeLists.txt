@@ -12,7 +12,7 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 # --- Fortran: https://wiki.octave.org/Fortran
 # Fortran in Octave MEX is accomplished by binding to C or C++ functions from Fortran
 add_test(NAME GenDataFile
-COMMAND Octave::Interpreter --eval "A = rand(3); save('-ascii', '${CMAKE_CURRENT_BINARY_DIR}/data.txt', 'A')"
+COMMAND Octave::Interpreter --eval "A = [1,2,3]; save('-ascii', '${CMAKE_CURRENT_BINARY_DIR}/data.txt', 'A')"
 )
 set_property(TEST GenDataFile PROPERTY FIXTURES_SETUP data_fxt)
 

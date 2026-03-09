@@ -1,6 +1,8 @@
 // Octave header
 #include <octave/oct.h>
 #include <ls-mat-ascii.h>
+#include <algorithm>
+#include <memory>
 
 extern "C" int octave_load (const char*, double**, int*);
 
@@ -18,6 +20,9 @@ int octave_load (const char* file_name, double** data, int* numel)
 
   // Read a plain ASCII matrix from data file.
   std::ifstream in_file_stream (file_name, std::ios::binary);
+  if (!in_file_stream)
+    return 1;
+
   read_mat_ascii_data (in_file_stream, file_name, read_data);
   in_file_stream.close ();
 
@@ -25,15 +30,18 @@ int octave_load (const char* file_name, double** data, int* numel)
   NDArray A = read_data.array_value ();
 
   // Extract number of elements in matrix A.
-  *numel = A.numel ();
+  const auto num_elements = A.numel ();
+  *numel = num_elements;
 
-  // Allocate memory to pointer to returned values.
-  *data = (double*) malloc (A.numel () * sizeof (double));
-  if(!data)
-    return 1;
+  // Allocate memory using std::unique_ptr for automatic cleanup on exception.
+  auto data_ptr = std::make_unique<double[]>(num_elements);
 
-  // Copy the content of matrix A to data structure Fortran can handle.
-  memcpy (*data, A.fortran_vec (), A.numel () * sizeof (double));
+  // Copy the content of matrix A to data structure using std::copy (type-safe).
+  const double* src = A.fortran_vec ();
+  std::copy (src, src + num_elements, data_ptr.get());
+
+  // Transfer ownership to caller.
+  *data = data_ptr.release();
 
   return 0;
 }
