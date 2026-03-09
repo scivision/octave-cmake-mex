@@ -1,9 +1,12 @@
-add_custom_command(OUTPUT array_add.oct
-COMMAND Octave::mkoctfile ${CMAKE_CURRENT_SOURCE_DIR}/array_add.cpp
+add_custom_command(OUTPUT addtwomatrices.oct
+COMMAND Octave::mkoctfile ${CMAKE_CURRENT_SOURCE_DIR}/addtwomatrices.cpp
 )
-add_custom_target(array_add ALL DEPENDS array_add.oct)
+add_custom_target(addtwomatrices ALL DEPENDS addtwomatrices.oct)
 
-add_test(NAME Octave_array_add COMMAND Octave::Interpreter --eval "array_add_test()")
+add_test(NAME Octave_addtwomatrices
+COMMAND Octave::Interpreter --path ${CMAKE_CURRENT_BINARY_DIR} --eval "addtwomatrices_test()"
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 
 # --- Fortran: https://wiki.octave.org/Fortran
