@@ -24,4 +24,8 @@ call prod(A, A2, size(A, kind=C_SIZE_T))
 print '(a,2F7.3)', "Fortran in: ", A
 print '(a,F7.3)', "Fortran out: ", A2
 
+if (A2(1) /= product(A)) error stop "Error: A2 does not match the product of A"
+
+print *, "OK: A2 matches the product of A"
+
 end program

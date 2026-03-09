@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstring>
 #include <oct.h>
 
@@ -12,12 +11,8 @@ void octave_prod(double* A, double* A2, std::size_t numel){
   // Copy caller-provided contiguous data into an Octave matrix.
   std::memcpy(Ao.fortran_vec(), A, numel * sizeof(double));
 
-  std::cout << "Ao: " << Ao << "\n";
-
   A2o = Ao.prod(1);
 
   // Write into the caller-provided output buffer.
   A2[0] = A2o(0, 0);
-
-  std::cout << "C++ A2: " << *A2 << "\n";
 }
