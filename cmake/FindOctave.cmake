@@ -40,7 +40,10 @@ FindOctave checks the environment variable OCTAVE_EXECUTABLE for the
 Octave interpreter.
 #]=======================================================================]
 
-get_filename_component(_octave_hint_dirs "$ENV{OCTAVE_EXECUTABLE}" DIRECTORY)
+if(DEFINED ENV{OCTAVE_EXECUTABLE})
+  set(_octave_exe $ENV{OCTAVE_EXECUTABLE})
+  cmake_path(GET _octave_exe PARENT_PATH _octave_hint_dirs)
+endif()
 
 if(WIN32)
   set(_arch mingw64)
@@ -49,7 +52,7 @@ if(WIN32)
     file(GLOB _g LIST_DIRECTORIES false "${_p}/Octave-*/${_arch}/bin/octave-config.exe")
     message(DEBUG "Octave glob hints: ${_g}")
     foreach(_h IN LISTS _g)
-      get_filename_component(_h "${_h}" DIRECTORY)
+      cmake_path(GET _h PARENT_PATH _h)
       list(APPEND _octave_hint_dirs "${_h}")
     endforeach()
   endforeach()

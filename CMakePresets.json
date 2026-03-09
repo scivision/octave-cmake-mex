@@ -6,15 +6,13 @@
   "name": "default",
   "binaryDir": "${sourceDir}/build",
   "cacheVariables": {
-    "CMAKE_COMPILE_WARNING_AS_ERROR": true
+    "CMAKE_COMPILE_WARNING_AS_ERROR": true,
+    "CMAKE_LINK_WARNING_AS_ERROR": true
   }
 }
 ],
 "buildPresets": [
-  {
-    "name": "default",
-    "configurePreset": "default"
-  }
+  { "name": "default", "configurePreset": "default"}
 ],
 "testPresets": [
 {
@@ -28,7 +26,8 @@
     "noTestsAction": "error",
     "scheduleRandom": true,
     "stopOnFailure": false,
-    "timeout": 60
+    "timeout": 60,
+    "jobs": 0
   }
 }
 ],
@@ -36,18 +35,9 @@
   {
     "name": "default",
     "steps": [
-      {
-        "type": "configure",
-        "name": "default"
-      },
-      {
-        "type": "build",
-        "name": "default"
-      },
-      {
-        "type": "test",
-        "name": "default"
-      }
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "default" },
+      { "type": "test", "name": "default" }
     ]
   }
 ]

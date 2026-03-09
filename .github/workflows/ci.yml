@@ -1,9 +1,5 @@
 name: CI
 
-env:
-  CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 0
-
 on:
   push:
     paths:
@@ -24,9 +20,11 @@ jobs:
 
     - name: Install Octave
       timeout-minutes: 10
-      run: sudo apt install --no-install-recommends octave octave-dev
+      run: |
+        sudo apt update
+        sudo apt install --no-install-recommends octave octave-dev
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: CMake workflow
       run: cmake --workflow default

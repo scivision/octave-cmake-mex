@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...4.1)
+cmake_minimum_required(VERSION 3.20...4.3)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "please use out-of-source build
