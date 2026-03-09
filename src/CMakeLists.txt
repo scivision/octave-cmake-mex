@@ -17,25 +17,29 @@ COMMAND Octave::Interpreter --eval "A = [1,2,3]; save('-ascii', '${CMAKE_CURRENT
 set_property(TEST GenDataFile PROPERTY FIXTURES_SETUP data_fxt)
 
 
-add_custom_command(OUTPUT fortran_exe
-COMMAND Octave::mkoctfile --link-stand-alone -o fortran_exe
+set(fortran_exe "${CMAKE_CURRENT_BINARY_DIR}/fortran_exe${CMAKE_EXECUTABLE_SUFFIX}")
+set(pow2_exe "${CMAKE_CURRENT_BINARY_DIR}/pow2exe${CMAKE_EXECUTABLE_SUFFIX}")
+
+
+add_custom_command(OUTPUT ${fortran_exe}
+COMMAND Octave::mkoctfile --link-stand-alone -o ${fortran_exe}
 ${CMAKE_CURRENT_SOURCE_DIR}/file.f90 ${CMAKE_CURRENT_SOURCE_DIR}/file.cpp
 $<$<STREQUAL:${Octave_MKOCTFILE_Fortran_COMPILER},gfortran>:-lgfortran>
 )
-add_custom_target(fortran_file ALL DEPENDS fortran_exe)
+add_custom_target(fortran_file ALL DEPENDS ${fortran_exe})
 
-add_test(NAME Octave_Fortran_file COMMAND fortran_exe
+add_test(NAME Octave_Fortran_file COMMAND ${fortran_exe}
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 set_property(TEST Octave_Fortran_file PROPERTY FIXTURES_REQUIRED data_fxt)
 
-add_custom_command(OUTPUT pow2exe
-COMMAND Octave::mkoctfile --link-stand-alone -o pow2exe
+add_custom_command(OUTPUT ${pow2_exe}
+COMMAND Octave::mkoctfile --link-stand-alone -o ${pow2_exe}
 ${CMAKE_CURRENT_SOURCE_DIR}/pow2.f90 ${CMAKE_CURRENT_SOURCE_DIR}/pow2.cpp
 $<$<STREQUAL:${Octave_MKOCTFILE_Fortran_COMPILER},gfortran>:-lgfortran>
 )
-add_custom_target(pow2 ALL DEPENDS pow2exe)
-add_test(NAME Octave_Fortran_array COMMAND pow2exe)
+add_custom_target(pow2 ALL DEPENDS ${pow2_exe})
+add_test(NAME Octave_Fortran_array COMMAND ${pow2_exe})
 
 
 
