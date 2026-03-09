@@ -96,6 +96,21 @@ if(Development IN_LIST Octave_FIND_COMPONENTS)
 
   if(Octave_MKOCTFILE)
     set(Octave_Development_FOUND true)
+
+    execute_process(COMMAND "${Octave_MKOCTFILE}" --print F77
+    OUTPUT_VARIABLE Octave_MKOCTFILE_Fortran_COMPILER
+    OUTPUT_STRIP_TRAILING_WHITESPACE TIMEOUT 10
+    )
+
+    execute_process(COMMAND "${Octave_MKOCTFILE}" --print CC
+    OUTPUT_VARIABLE Octave_MKOCTFILE_C_COMPILER
+    OUTPUT_STRIP_TRAILING_WHITESPACE TIMEOUT 10
+    )
+
+    execute_process(COMMAND "${Octave_MKOCTFILE}" --print CXX
+    OUTPUT_VARIABLE Octave_MKOCTFILE_CXX_COMPILER
+    OUTPUT_STRIP_TRAILING_WHITESPACE TIMEOUT 10
+    )
   endif()
 
 endif()
