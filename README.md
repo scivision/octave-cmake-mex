@@ -7,6 +7,8 @@ CMake and GNU Octave with C, C++ and Fortran code using
 akin to Matlab "mex" command.
 Octfiles are easier and better to use with GNU Octave.
 
+For Linux package managers, typically the "octave-dev" or "Octave-devel" or similar package is required to get the development libraries and headers needed to build Octave extensions.
+
 ## Usage
 
 Build:

@@ -44,9 +44,13 @@ add_test(NAME Octave_Fortran_array COMMAND pow2exe)
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 
 if(WIN32)
-  cmake_path(GET Octave_EXECUTABLE PARENT_PATH Octave_DLLPATH)
-
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Octave_DLLPATH}
+  ENVIRONMENT_MODIFICATION PATH=path_list_prepend:${Octave_BINARY_DIR}
   )
+elseif(APPLE)
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION DYLD_LIBRARY_PATH=path_list_prepend:${Octave_OCTLIBDIR})
+else()
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION LD_LIBRARY_PATH=path_list_prepend:${Octave_OCTLIBDIR})
 endif()
