@@ -1,22 +1,23 @@
 #include <iostream>
+#include <cstring>
 #include <oct.h>
 
-extern "C" void octave_prod(double*, double*, int*);
+extern "C" void octave_prod(double*, double*, std::size_t);
 
-void octave_prod(double* A, double* A2, int* numel){
+void octave_prod(double* A, double* A2, std::size_t numel){
 
-  Matrix Ao(1,*numel, *A);
+  Matrix Ao(1, numel);
   Matrix A2o(1, 1);
 
-  std::cout << "Ao: " << Ao << std::endl;
+  // Copy caller-provided contiguous data into an Octave matrix.
+  std::memcpy(Ao.fortran_vec(), A, numel * sizeof(double));
+
+  std::cout << "Ao: " << Ao << "\n";
 
   A2o = Ao.prod(1);
 
-  // Allocate memory to pointer to returned values.
-  A2 = (double*) malloc (A2o.numel() * sizeof (double));
+  // Write into the caller-provided output buffer.
+  A2[0] = A2o(0, 0);
 
-  // Copy the content of matrix A to data structure Fortran can handle.
-  memcpy(A2, A2o.fortran_vec(), A2o.numel() * sizeof (double));
-
-  std::cout << "A2: " << *A2 << std::endl;
+  std::cout << "C++ A2: " << *A2 << "\n";
 }
