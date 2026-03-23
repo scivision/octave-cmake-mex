@@ -22,7 +22,7 @@ set(pow2_exe "${CMAKE_CURRENT_BINARY_DIR}/pow2exe${CMAKE_EXECUTABLE_SUFFIX}")
 
 
 add_custom_command(OUTPUT ${fortran_exe}
-COMMAND Octave::mkoctfile --link-stand-alone -o ${fortran_exe}
+COMMAND Octave::mkoctfile ${Octave_LDFLAGS} --link-stand-alone --verbose -o ${fortran_exe}
 ${CMAKE_CURRENT_SOURCE_DIR}/file.f90 ${CMAKE_CURRENT_SOURCE_DIR}/file.cpp
 $<$<STREQUAL:${Octave_MKOCTFILE_Fortran_COMPILER},gfortran>:-lgfortran>
 )
@@ -34,7 +34,7 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 set_property(TEST Octave_Fortran_file PROPERTY FIXTURES_REQUIRED data_fxt)
 
 add_custom_command(OUTPUT ${pow2_exe}
-COMMAND Octave::mkoctfile --link-stand-alone -o ${pow2_exe}
+COMMAND Octave::mkoctfile ${Octave_LDFLAGS} --link-stand-alone --verbose -o ${pow2_exe}
 ${CMAKE_CURRENT_SOURCE_DIR}/pow2.f90 ${CMAKE_CURRENT_SOURCE_DIR}/pow2.cpp
 $<$<STREQUAL:${Octave_MKOCTFILE_Fortran_COMPILER},gfortran>:-lgfortran>
 )

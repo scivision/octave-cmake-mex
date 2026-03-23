@@ -9,7 +9,6 @@ project(OctaveMEX LANGUAGES NONE)
 
 enable_testing()
 
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package(Octave COMPONENTS Development Interpreter REQUIRED)

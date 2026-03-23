@@ -18,6 +18,13 @@ cmake -B build
 cmake --build build
 ```
 
+If on macOS with Homebrew-installed Octave and build/link failures occur due to not finding "lgfortran" try the toolchain file "homebrew.cmake" which adds the Homebrew prefix to the library search path:
+
+```sh
+cmake -B build --toolchain homebrew.cmake
+cmake --build build
+```
+
 Test:
 
 ```sh
